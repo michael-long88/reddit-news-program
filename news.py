@@ -2,7 +2,6 @@ import os
 import praw
 import requests
 from bs4 import BeautifulSoup
-from webpreview import web_preview
 import time
 
 CLIENT_ID = os.environ.get('PRAW_CLIENT_ID')
@@ -31,22 +30,6 @@ def get_top_10_submissions() -> list:
     return top_10
 
 
-# def get_top_10_images_and_descriptions(submissions) -> list:
-#     start_time = time.time()
-#     top_10_with_preview = []
-#     for submission in submissions:
-#         web_title, web_description, web_image = web_preview(submission.url)
-#         # print(web_image)
-#         top_10_with_preview.append({
-#             'title': web_title,
-#             'description': web_description,
-#             'image': web_image,
-#             'url': submission.url
-#         })
-#
-#     print(f"total run time: {time.time() - start_time}")
-#     return top_10_with_preview
-
 def get_top_10_images_and_descriptions(submissions) -> list:
     start_time = time.time()
     top_10_with_preview = []
@@ -66,7 +49,7 @@ def get_top_10_images_and_descriptions(submissions) -> list:
     return top_10_with_preview
 
 
-def get_article_story(soup):
+def get_article_story(soup) -> str:
     article = soup.find_all('p')
     article_story = "".join([text.get_text() for text in article])
     if len(article_story) > 200:
@@ -74,13 +57,7 @@ def get_article_story(soup):
     return article_story
 
 
-def get_image_url(soup):
+def get_image_url(soup) -> str:
     image_meta = soup.find('meta', attrs={'property': 'og:image'})
     image_url = image_meta['content']
     return image_url
-    # first_h1 = soup.find('h1')
-    # if first_h1:
-    #     first_image = first_h1.find_next_sibling('img')
-    #     if first_image and first_image['src'] != "":
-    #         return first_image['src']
-    # return None
